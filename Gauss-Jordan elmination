@@ -1,0 +1,87 @@
+#include <stdio.h>
+#include <stdlib.h>
+#include <time.h>
+
+#define MAX_ROW_LEN 11
+#define MAX_COL_LEN 10
+
+int main()
+{
+	int i, j, k;
+	int matrix[MAX_ROW_LEN][MAX_COL_LEN];
+	
+	srand((unsigned) time(NULL));
+	
+	for(i=0; i<MAX_ROW_LEN; i++)
+	{
+		for(j=0; j<MAX_COL_LEN; j++)
+		{
+			matrix[i][j] = rand()%10;
+		}
+	}
+		
+	printf("[matrix]");//matrix 출력 
+	for(i = 0; i<MAX_ROW_LEN; i++)
+	{
+		for(j = 0; j<MAX_COL_LEN; j++)
+		{
+			matrix[i][j] = rand()%10;
+			if(j==0)
+			{
+				printf("\n[ ");
+			}
+			printf("%d ", matrix[i][j]);
+			if(j==MAX_COL_LEN-1)
+			{
+				printf("]");	
+			}		
+		}
+	}
+
+	for(k=0; k<MAX_ROW_LEN; k++)//Gaussian elimination method(pivoting)
+	{
+		for(i=0; i<MAX_ROW_LEN; i++)
+		{
+			for(j=0; j<MAX_COL_LEN; j++)
+			{	
+				if(j<=k)
+				{
+					matrix[i][j]=matrix[i][j];
+				}
+				else if(matrix[i][j]<0, matrix[i][i]<0)
+				{
+					matrix[i][j]=matrix[k][k]-((matrix[i][j]/matrix[i][j])*matrix[k][k]);
+				}
+				else if(matrix[i][j]>0, matrix[i][i]>0)
+				{	
+					matrix[i][j]=matrix[k][k]-((matrix[i][j]/matrix[i][j])*matrix[k][k]);
+				}
+				else
+				{
+					matrix[i][j]=matrix[k][k]+((matrix[i][j]/matrix[i][j])*matrix[k][k]);
+				}
+			}
+		}
+	}
+	
+	printf("\n\n[matrix_RESULT]");//matrix_RESULT 출력
+	for(i = 0; i<MAX_ROW_LEN; i++)
+	{
+		for(j = 0; j<MAX_COL_LEN; j++)
+		{
+			if(j==0)
+			{
+				printf("\n[	");
+			}
+			printf("%d	", matrix[i][j]);
+			if(j==MAX_COL_LEN-1)
+			{
+				printf("]");	
+			}		
+		}
+	}
+	
+	
+	printf("가우스 소거법을 이용한 결과값 X");
+	return 0;
+}
