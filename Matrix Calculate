@@ -1,0 +1,109 @@
+#include <stdio.h>
+#include <stdlib.h>
+#include <time.h>
+
+#define MAX_ROW_LEN 11
+#define MAX_COL_LEN 10
+
+int main(void)
+{
+	int matrixA[MAX_ROW_LEN][MAX_COL_LEN];
+	int matrixB[MAX_ROW_LEN][MAX_COL_LEN];
+	int matrix_RESULT[MAX_ROW_LEN][MAX_COL_LEN];
+	
+	char Operator[100];
+	char plus[100] = {"+"};
+	char minus[100] = {"-"};
+	
+	int i, j;
+	int k = 0;
+	
+	srand((unsigned) time(NULL));
+	
+	printf("[matrixA]");//matrixA 출력 
+	for(i = 0; i<MAX_ROW_LEN; i++)
+	{
+		for(j = 0; j<MAX_COL_LEN; j++)
+		{
+			matrixA[i][j] = rand()%10;
+			if(j==0)
+			{
+				printf("\n[ ");
+			}
+			printf("%d ", matrixA[i][j]);
+			if(j==MAX_COL_LEN-1)
+			{
+				printf("]");	
+			}		
+		}
+	}
+	
+	printf("\n\n[matrixB]");//matrixB 출력
+	for(i = 0; i<MAX_ROW_LEN; i++)
+	{
+		for(j = 0; j<MAX_COL_LEN; j++)
+		{
+			matrixB[i][j] = rand()%10;
+			if(j==0)
+			{
+				printf("\n[ ");
+			}
+			printf("%d ", matrixB[i][j]);
+			if(j==MAX_COL_LEN-1)
+			{
+				printf("]");	
+			}		
+		}
+	}
+	
+	printf("\n\n연산 기호 + or - 를 입력하시오 : ");//연산자 입력
+	scanf("%s", Operator);
+	
+	while(k<1)
+	{
+		if(Operator[0]==plus[0])//matrixA + matrixB 정의
+		{
+			for(i=0; i<MAX_ROW_LEN; i++)
+			{
+				for(j=0; j<MAX_COL_LEN; j++)
+				{
+					matrix_RESULT[i][j] = matrixA[i][j] + matrixB[i][j];
+					k=1;
+				}
+			}
+		}	
+		else if(Operator[0]==minus[0])//matrixA - matrixB 정의
+		{
+			for(i=0; i<MAX_ROW_LEN; i++)
+			{
+				for(j=0; j<MAX_COL_LEN; j++)
+				{
+					matrix_RESULT[i][j] = matrixA[i][j] - matrixB[i][j];
+					k=1;
+				}
+			}
+		}
+		else
+		{	printf("\n연산 기호 + or - 를 입력하시오 : ");
+			scanf("%s", Operator);
+		}
+	}
+	printf("\n\n[matrix_RESULT]");//matrix_RESULT 출력
+	for(i = 0; i<MAX_ROW_LEN; i++)
+	{
+		for(j = 0; j<MAX_COL_LEN; j++)
+		{
+			if(j==0)
+			{
+				printf("\n[	");
+			}
+			printf("%d	", matrix_RESULT[i][j]);
+			if(j==MAX_COL_LEN-1)
+			{
+				printf("]");	
+			}		
+		}
+	}
+	
+	return 0;
+}
