@@ -2,24 +2,20 @@
 #include <stdlib.h>
 #include <time.h>
 
-#define MAX_ROW_LEN 11
-#define MAX_COL_LEN 10
+#define MAX_ROW_LEN 10
+#define MAX_COL_LEN 11
 
-int main()
+int main(void)
 {
-	int i, j, k;
-	int matrix[MAX_ROW_LEN][MAX_COL_LEN];
+	int i, j, k, f;
+	float matrix[MAX_ROW_LEN][MAX_COL_LEN];
+	float save[2];
+	float x[MAX_COL_LEN-1];
+	float t[MAX_COL_LEN-1];
+	float change_ROW[MAX_COL_LEN];
 	
 	srand((unsigned) time(NULL));
-	
-	for(i=0; i<MAX_ROW_LEN; i++)
-	{
-		for(j=0; j<MAX_COL_LEN; j++)
-		{
-			matrix[i][j] = rand()%10;
-		}
-	}
-		
+			
 	printf("[matrix]");//matrix 출력 
 	for(i = 0; i<MAX_ROW_LEN; i++)
 	{
@@ -30,50 +26,112 @@ int main()
 			{
 				printf("\n[ ");
 			}
-			printf("%d ", matrix[i][j]);
+			printf("%f ", matrix[i][j]);
 			if(j==MAX_COL_LEN-1)
 			{
 				printf("]");	
 			}		
 		}
 	}
-
-	for(k=0; k<MAX_ROW_LEN; k++)//Gaussian elimination method(pivoting)
+	
+	for(k=0; k<MAX_ROW_LEN-1; k++)//Gaussian elimination method(pivoting)
 	{
 		for(i=0; i<MAX_ROW_LEN; i++)
-		{
-			for(j=0; j<MAX_COL_LEN; j++)
+		{		
+			save[0]=matrix[k][k];
+			save[1]=matrix[i][k];
+			
+			if(save[1]==0)//pivoting 이미 끝난 행으로 간주 
+			{
+			}
+			else if(save[0]==0)//pivoting 할 기준 원소가 0일시 행교환 
 			{	
-				if(j<=k)
+				for(f=0; f<MAX_COL_LEN; f++)
 				{
-					matrix[i][j]=matrix[i][j];
+					change_ROW[f]=matrix[k][f];
 				}
-				else if(matrix[i][j]<0, matrix[i][i]<0)
+				for(f=0; f<MAX_COL_LEN; f++)
 				{
-					matrix[i][j]=matrix[k][k]-((matrix[i][j]/matrix[i][j])*matrix[k][k]);
+					matrix[k][f]=matrix[MAX_ROW_LEN-1][f];
 				}
-				else if(matrix[i][j]>0, matrix[i][i]>0)
+				for(f=0; f<MAX_COL_LEN; f++)
+				{
+					matrix[MAX_ROW_LEN-1][f]=change_ROW[f];
+				}
+				save[0]=matrix[k][k];
+				save[1]=matrix[i][k];
+		
+				for(j=0; j<MAX_COL_LEN; j++)//행교환 이후 나머지 행 pivoting 
 				{	
-					matrix[i][j]=matrix[k][k]-((matrix[i][j]/matrix[i][j])*matrix[k][k]);
+					if(k>=i)
+					{
+						matrix[i][j]=matrix[i][j];
+					}
+					else if(k-1>=j)
+					{
+						matrix[i][j]=matrix[i][j];
+					}
+					else if(j==k && i>k)
+					{
+						matrix[i][j]=save[0]-((matrix[i][j]/save[1])*save[0]);
+					}
+					else
+					{
+						matrix[i][j]=matrix[i-1][j]-((matrix[i][j]/save[1])*save[0]);	
+					}		
+				}	
+			}
+			else//행교환 없는 정상적인 pivoting 
+			{
+				for(j=0; j<MAX_COL_LEN; j++)
+				{	
+					if(k>=i)
+					{
+						matrix[i][j]=matrix[i][j];
+					}
+					else if(k-1>=j)
+					{
+						matrix[i][j]=matrix[i][j];
+					}
+					else if(j==k && i>k)
+					{
+						matrix[i][j]=save[0]-((matrix[i][j]/save[1])*save[0]);
+					}
+					else
+					{
+						matrix[i][j]=matrix[i-1][j]-((matrix[i][j]/save[1])*save[0]);	
+					}		
 				}
-				else
+			}
+		}
+		printf("\n\n[matrix]");//pivoting 풀이과정 matrix 출력
+		for(i = 0; i<MAX_ROW_LEN; i++)
+		{
+			for(j = 0; j<MAX_COL_LEN; j++)
+			{
+				if(j==0)
 				{
-					matrix[i][j]=matrix[k][k]+((matrix[i][j]/matrix[i][j])*matrix[k][k]);
+					printf("\n[ ");
 				}
+				printf("%f ", matrix[i][j]);
+				if(j==MAX_COL_LEN-1)
+				{
+					printf("]");	
+				}		
 			}
 		}
 	}
 	
-	printf("\n\n[matrix_RESULT]");//matrix_RESULT 출력
+	printf("\n\n[matrix]_Gaussian_elminate");//matrix 출력 
 	for(i = 0; i<MAX_ROW_LEN; i++)
 	{
 		for(j = 0; j<MAX_COL_LEN; j++)
 		{
 			if(j==0)
 			{
-				printf("\n[	");
+				printf("\n[ ");
 			}
-			printf("%d	", matrix[i][j]);
+			printf("%f ", matrix[i][j]);
 			if(j==MAX_COL_LEN-1)
 			{
 				printf("]");	
@@ -81,7 +139,27 @@ int main()
 		}
 	}
 	
-	
-	printf("가우스 소거법을 이용한 결과값 X");
+	printf("\n\n[가우스 소거법을 이용한 결과값 X]");//Gaussian elmination 이후 변수 해
+	if(matrix[MAX_ROW_LEN-1][MAX_COL_LEN-2]==0)
+	{
+		printf("\n[ matrix Rank < %d]", MAX_ROW_LEN);
+	}
+	else
+	{
+		x[0]=matrix[MAX_ROW_LEN-1][MAX_COL_LEN-1]/matrix[MAX_ROW_LEN-1][MAX_COL_LEN-2];
+		for(i = 0; i < MAX_COL_LEN ; i++)
+		{
+			for(j = 0; j == i; j++)
+			{
+				t[i]=t[i]+(matrix[MAX_ROW_LEN-2-i][MAX_COL_LEN-2]*x[j]);
+			}
+		}
+		printf("\n[ X10 = %f ]", x[0]);
+		for(i = 1; i < MAX_COL_LEN-1; i++)
+		{
+			x[i]=(matrix[MAX_ROW_LEN-i-1][MAX_COL_LEN-1]-t[i-1])/matrix[MAX_ROW_LEN-i-1][MAX_COL_LEN-i-2];
+			printf("\n[ X%d = %f ]",MAX_COL_LEN-i-1 ,x[i]);
+		}
+	}
 	return 0;
 }
