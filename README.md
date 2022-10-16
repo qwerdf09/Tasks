@@ -1,2 +1,2 @@
-# tasks
+# Tasks
 Gauss-Jordan elimination
